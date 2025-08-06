@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blanket | BlanketCo</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .transition-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .input-focus {
+            transition: all 0.3s;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+        
+        input:focus, select:focus {
+            @apply input-focus;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header with floating animation -->
+    <header class="gradient-bg text-white shadow-xl animate-float">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex justify-between items-center">
+                <div class="transform hover:scale-105 transition-smooth">
+                    <h1 class="text-3xl font-bold">Edit Blanket</h1>
+                    <p class="opacity-90 mt-1">Update your cozy creation</p>
+                </div>
+                <nav>
+                    <a href="inventory.html" class="text-white hover:bg-white hover:bg-opacity-20 px-4 py-2 rounded-lg transition-smooth flex items-center space-x-2">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Inventory</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 transform hover:scale-[99.5%] transition-smooth">
+        <div class="max-w-3xl mx-auto">
+            <!-- Card with subtle shadow and hover effect -->
+            <div class="bg-white rounded-2xl card-shadow overflow-hidden transition-smooth hover:shadow-lg">
+                <!-- Loading spinner with bounce animation -->
+                <div id="loading" class="p-8 text-center">
+                    <div class="inline-block animate-bounce">
+                        <i class="fas fa-spinner fa-spin text-3xl text-primary-600"></i>
+                    </div>
+                    <p class="mt-4 text-gray-600 font-medium">Loading your blanket details...</p>
+                </div>
+                
+                <!-- Form container with fade-in effect -->
+                <div id="editFormContainer" class="hidden opacity-0 transition-opacity duration-500">
+                    <!-- Form will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const blanketId = urlParams.get('id');
+            
+            if (!blanketId) {
+                window.location.href = 'inventory.html';
+                return;
+            }
+            
+            // Fetch blanket details with delay to show loading animation
+            setTimeout(() => {
+                fetch(`http://localhost:5003/api/blankets/${blanketId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            renderEditForm(data.data);
+                        } else {
+                            showError('Failed to load blanket: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to load blanket details');
+                    });
+            }, 800); // Artificial delay for demo purposes
+            
+            function showError(message) {
+                const loading = document.getElementById('loading');
+                loading.innerHTML = `
+                    <div class="text-red-500">
+                        <i class="fas fa-exclamation-circle text-3xl mb-3"></i>
+                        <p class="text-lg font-medium">${message}</p>
+                        <button onclick="window.location.href='inventory.html'" 
+                                class="mt-4 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-smooth">
+                            Return to Inventory
+                        </button>
+                    </div>
+                `;
+            }
+            
+            function renderEditForm(blanket) {
+                const formContainer = document.getElementById('editFormContainer');
+                const loading = document.getElementById('loading');
+                
+                // Create form HTML with enhanced UI
+                formContainer.innerHTML = `
+                    <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-primary-100">
+                        <div class="flex items-center space-x-4">
+                            <div class="p-3 bg-primary-100 rounded-full">
+                                <i class="fas fa-edit text-primary-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">Editing: <span class="text-primary-600">${blanket.name}</span></h2>
+                                <p class="text-gray-600">Make your changes below</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="editBlanketForm" class="p-6 space-y-6">
+                        <input type="hidden" id="id" name="id" value="${blanket.id}">
+                        
+                        <!-- Name Field with floating label effect -->
+                        <div class="relative">
+                            <input type="text" id="name" name="name" required value="${blanket.name}"
+                                class="w-full px-4 py-3 border-0 border-b-2 border-gray-200 focus:border-primary-500 bg-gray-50 rounded-t-lg transition-smooth focus:outline-none focus:ring-0 peer"
+                                placeholder=" ">
+                            <label for="name" class="absolute left-4 top-3 text-gray-500 pointer-events-none transition-all duration-300 
+                                peer-placeholder-shown:text-base peer-placeholder-shown:top-3 
+                                peer-focus:-top-3 peer-focus:text-sm peer-focus:text-primary-600
+                                -top-3 text-sm text-primary-600 bg-gray-50 px-1">
+                                <i class="fas fa-tag mr-1"></i> Blanket Name *
+                            </label>
+                        </div>
+                        
+                        <!-- Material Field with custom select -->
+                        <div class="relative">
+                            <select id="material" name="material" required
+                                class="w-full px-4 py-3 border-0 border-b-2 border-gray-200 focus:border-primary-500 bg-gray-50 rounded-t-lg appearance-none transition-smooth focus:outline-none focus:ring-0">
+                                <option value="">Select Material</option>
+                                <option value="Wool" ${blanket.material === 'Wool' ? 'selected' : ''}>Wool</option>
+                                <option value="Fleece" ${blanket.material === 'Fleece' ? 'selected' : ''}>Fleece</option>
+                                <option value="Cotton" ${blanket.material === 'Cotton' ? 'selected' : ''}>Cotton</option>
+                                <option value="Cashmere" ${blanket.material === 'Cashmere' ? 'selected' : ''}>Cashmere</option>
+                                <option value="Bamboo" ${blanket.material === 'Bamboo' ? 'selected' : ''}>Bamboo</option>
+                            </select>
+                            <label class="absolute left-4 top-3 text-gray-500 pointer-events-none transition-all duration-300">
+                                <i class="fas fa-cut mr-1"></i> Material *
+                            </label>
+                            <div class="absolute right-4 top-4 text-gray-400 pointer-events-none">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Size Field -->
+                        <div class="relative">
+                            <select id="size" name="size" required
+                                class="w-full px-4 py-3 border-0 border-b-2 border-gray-200 focus:border-primary-500 bg-gray-50 rounded-t-lg appearance-none transition-smooth focus:outline-none focus:ring-0">
+                                <option value="">Select Size</option>
+                                <option value="Small (50x60 in)" ${blanket.size === 'Small (50x60 in)' ? 'selected' : ''}>Small (50x60 in)</option>
+                                <option value="Medium (60x80 in)" ${blanket.size === 'Medium (60x80 in)' ? 'selected' : ''}>Medium (60x80 in)</option>
+                                <option value="Large (80x90 in)" ${blanket.size === 'Large (80x90 in)' ? 'selected' : ''}>Large (80x90 in)</option>
+                                <option value="King (108x90 in)" ${blanket.size === 'King (108x90 in)' ? 'selected' : ''}>King (108x90 in)</option>
+                            </select>
+                            <label class="absolute left-4 top-3 text-gray-500 pointer-events-none transition-all duration-300">
+                                <i class="fas fa-ruler-combined mr-1"></i> Size *
+                            </label>
+                            <div class="absolute right-4 top-4 text-gray-400 pointer-events-none">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Color Field with tag preview -->
+                        <div class="relative">
+                            <input type="text" id="color" name="color" required value="${blanket.color}"
+                                class="w-full px-4 py-3 border-0 border-b-2 border-gray-200 focus:border-primary-500 bg-gray-50 rounded-t-lg transition-smooth focus:outline-none focus:ring-0 peer"
+                                placeholder=" ">
+                            <label for="color" class="absolute left-4 top-3 text-gray-500 pointer-events-none transition-all duration-300 
+                                peer-placeholder-shown:text-base peer-placeholder-shown:top-3 
+                                peer-focus:-top-3 peer-focus:text-sm peer-focus:text-primary-600
+                                -top-3 text-sm text-primary-600 bg-gray-50 px-1">
+                                <i class="fas fa-palette mr-1"></i> Color Variants *
+                            </label>
+                            <div id="colorTags" class="flex flex-wrap gap-2 mt-2">
+                                ${blanket.color.split(',').map(color => `
+                                    <span class="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800">
+                                        ${color.trim()}
+                                    </span>
+                                `).join('')}
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Separate colors with commas</p>
+                        </div>
+                        
+                        <!-- Price Field with currency symbol -->
+                        <div class="relative">
+                            <div class="absolute left-4 top-4 text-gray-500">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <input type="number" id="price" name="price" min="0" step="0.01" required value="${blanket.price}"
+                                class="w-full pl-10 pr-4 py-3 border-0 border-b-2 border-gray-200 focus:border-primary-500 bg-gray-50 rounded-t-lg transition-smooth focus:outline-none focus:ring-0 peer"
+                                placeholder=" ">
+                            <label for="price" class="absolute left-10 top-3 text-gray-500 pointer-events-none transition-all duration-300 
+                                peer-placeholder-shown:text-base peer-placeholder-shown:top-3 
+                                peer-focus:-top-3 peer-focus:text-sm peer-focus:text-primary-600
+                                -top-3 text-sm text-primary-600 bg-gray-50 px-1">
+                                Price (Rs.) *
+                            </label>
+                        </div>
+                        
+                        <!-- Stock Field with visual indicator -->
+                        <div class="relative">
+                            <input type="number" id="stock" name="stock" min="0" required value="${blanket.stock}"
+                                class="w-full px-4 py-3 border-0 border-b-2 border-gray-200 focus:border-primary-500 bg-gray-50 rounded-t-lg transition-smooth focus:outline-none focus:ring-0 peer"
+                                placeholder=" ">
+                            <label for="stock" class="absolute left-4 top-3 text-gray-500 pointer-events-none transition-all duration-300 
+                                peer-placeholder-shown:text-base peer-placeholder-shown:top-3 
+                                peer-focus:-top-3 peer-focus:text-sm peer-focus:text-primary-600
+                                -top-3 text-sm text-primary-600 bg-gray-50 px-1">
+                                <i class="fas fa-boxes mr-1"></i> Stock *
+                            </label>
+                            <div class="mt-2">
+                                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="h-full ${getStockColorClass(blanket.stock)}" 
+                                         style="width: ${Math.min((blanket.stock / 100) * 100, 100)}%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Current stock level</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Form Actions with animated buttons -->
+                        <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-8">
+                            <button type="button" onclick="window.location.href='inventory.html'" 
+                                    class="px-6 py-3 rounded-lg font-medium transition-smooth flex items-center justify-center space-x-2 
+                                           border border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-sm">
+                                <i class="fas fa-times"></i>
+                                <span>Cancel</span>
+                            </button>
+                            <button type="submit" 
+                                    class="px-6 py-3 rounded-lg font-medium transition-smooth flex items-center justify-center space-x-2 
+                                           gradient-bg text-white hover:shadow-lg animate-pulse-slow">
+                                <i class="fas fa-save"></i>
+                                <span>Save Changes</span>
+                            </button>
+                        </div>
+                    </form>
+                `;
+                
+                // Show form with fade-in effect
+                loading.classList.add('hidden');
+                formContainer.classList.remove('hidden');
+                setTimeout(() => {
+                    formContainer.classList.remove('opacity-0');
+                }, 10);
+                
+                // Add real-time color tag preview
+                document.getElementById('color').addEventListener('input', function() {
+                    const tagsContainer = document.getElementById('colorTags');
+                    const colors = this.value.split(',').filter(c => c.trim() !== '');
+                    
+                    tagsContainer.innerHTML = colors.map(color => `
+                        <span class="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800">
+                            ${color.trim()}
+                        </span>
+                    `).join('');
+                });
+                
+                // Add form submission handler
+                document.getElementById('editBlanketForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnContent = submitBtn.innerHTML;
+                    
+                    // Add loading state
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    submitBtn.disabled = true;
+                    
+                    // Prepare form data
+                    const formData = {
+                        id: document.getElementById('id').value,
+                        name: document.getElementById('name').value,
+                        material: document.getElementById('material').value,
+                        size: document.getElementById('size').value,
+                        color: document.getElementById('color').value,
+                        price: parseFloat(document.getElementById('price').value),
+                        stock: parseInt(document.getElementById('stock').value)
+                    };
+                    
+                    // Add slight delay for animation
+                    setTimeout(() => {
+                        // Update blanket via API
+                        fetch(`http://localhost:5003/api/blankets/${blanketId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Success animation
+                                submitBtn.innerHTML = '<i class="fas fa-check"></i> Success!';
+                                submitBtn.classList.remove('gradient-bg', 'animate-pulse-slow');
+                                submitBtn.classList.add('bg-green-500');
+                                
+                                // Redirect after delay
+                                setTimeout(() => {
+                                    window.location.href = 'inventory.html';
+                                }, 1000);
+                            } else {
+                                showFormError('Error: ' + data.error, submitBtn, originalBtnContent);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showFormError('Failed to update blanket', submitBtn, originalBtnContent);
+                        });
+                    }, 500);
+                });
+            }
+            
+            function getStockColorClass(stock) {
+                if (stock < 10) return 'bg-red-500';
+                if (stock < 30) return 'bg-yellow-500';
+                return 'bg-green-500';
+            }
+            
+            function showFormError(message, button, originalContent) {
+                // Create error notification
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 animate-bounce';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>${message}</span>
+                `;
+                document.body.appendChild(errorDiv);
+                
+                // Remove error after 5 seconds
+                setTimeout(() => {
+                    errorDiv.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                    setTimeout(() => errorDiv.remove(), 300);
+                }, 5000);
+                
+                // Reset button
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

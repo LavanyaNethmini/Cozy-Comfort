@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Distributor Notifications</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+</head>
+<script src="distributorsidebar.js" defer></script>
+<body class="bg-gray-100 p-6">
+  <h1 class="text-2xl font-bold mb-4">Distributor Notifications</h1>
+
+  <div id="notificationList" class="space-y-4">
+    <!-- Notifications will load here -->
+  </div>
+
+  <script>
+    const distributorId = 3; // Change to logged-in distributor's ID
+
+    // Fetch and display notifications
+    function loadNotifications() {
+  fetch(`http://127.0.0.1:5006/notifications/${distributorId}`)
+    .then(res => res.json())
+    .then(notifications => {
+      const container = document.getElementById("notificationList");
+      container.innerHTML = "";
+
+      notifications.forEach(n => {
+        const notifDiv = document.createElement("div");
+        notifDiv.className = "bg-white shadow-md rounded-lg p-4 flex justify-between items-center";
+
+        notifDiv.innerHTML = `
+          <div>
+            <h2 class="text-lg font-semibold">${n.title}</h2>
+            <p class="text-gray-700">${n.message}</p>
+            <p class="text-sm text-gray-800"><strong>Seller:</strong> ${n.seller_name || "N/A"}</p>
+            <p class="text-sm text-gray-800"><strong>Subtotal:</strong> $${parseFloat(n.subtotal).toFixed(2)}</p>
+            <p class="text-sm text-gray-800"><strong>Placed On:</strong> ${n.placed_on}</p>
+            <p class="text-sm text-gray-500"><strong>Created:</strong> ${n.created_at}</p>
+            <p class="text-sm ${n.is_read ? 'text-green-600' : 'text-red-600'}">
+              Status: ${n.is_read ? 'Read' : 'Unread'}
+            </p>
+          </div>
+          <button 
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${n.is_read ? 'opacity-50 cursor-not-allowed' : ''}" 
+            ${n.is_read ? 'disabled' : ''}
+            onclick="markAsRead(${n.id})"
+          >
+            Mark as Read
+          </button>
+        `;
+
+        container.appendChild(notifDiv);
+      });
+    })
+    .catch(err => console.error("Error loading notifications:", err));
+}
+
+
+    // Mark as read
+    function markAsRead(id) {
+      fetch(`http://127.0.0.1:5006/notifications/${id}/read`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        loadNotifications(); // Reload list after marking as read
+      });
+    }
+
+    // Load on page start
+    loadNotifications();
+  </script>
+</body>
+</html>

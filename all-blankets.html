@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blanket Manufacturing Dashboard</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="Manufacturer-sidebar.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            100: '#FEF3C7',
+                            500: '#F59E0B',
+                            700: '#B45309',
+                            800: '#92400E',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-auto">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">All Blanket Products</h1>
+                    <p class="text-gray-600">Comprehensive view of all blanket products</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="p-2 rounded-full bg-white shadow hover:bg-gray-100 transition-colors relative">
+                            <i class="fas fa-bell text-gray-600"></i>
+                            <span class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a href="addNew.html" id="newBlanketBtn" class="bg-primary-800 hover:bg-primary-1000 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Add New</span>
+                        </a>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Blankets Table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">All Blanket Products</h2>
+                    <div class="flex space-x-3">
+                        <div class="relative">
+                            <select id="filterType" class="appearance-none bg-gray-100 border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                <option value="all">Filter by Type</option>
+                                <option value="Wool">Wool</option>
+                                <option value="Fleece">Fleece</option>
+                                <option value="Cotton">Cotton</option>
+                                <option value="Custom">Custom</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <select id="sortBy" class="appearance-none bg-gray-100 border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                <option value="default">Sort by</option>
+                                <option value="stock_asc">Stock Level (Low to High)</option>
+                                <option value="stock_desc">Stock Level (High to Low)</option>
+                                <option value="price_asc">Price (Low to High)</option>
+                                <option value="price_desc">Price (High to Low)</option>
+                                <option value="date_desc">Newest First</option>
+                                <option value="date_asc">Oldest First</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                        <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-3 rounded-lg text-sm transition-colors flex items-center">
+                            <i class="fas fa-download mr-2"></i>
+                            <span>Export</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Blanket Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Materials</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color Variants</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allBlankets" class="bg-white divide-y divide-gray-200">
+                            <!-- Blankets will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pagination" class="px-6 py-3 bg-gray-50 text-right">
+                    <!-- Pagination will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Blanket Details Modal -->
+    <div id="blanketModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md relative">
+            <button onclick="closeModal()" class="absolute top-2 right-3 text-gray-600 hover:text-red-600 text-xl">&times;</button>
+            <img id="modalImage" src="" alt="Blanket Image" class="w-full h-64 object-cover rounded mb-4">
+            <h2 class="text-xl font-bold mb-2" id="modalName"></h2>
+            <p><strong>Material:</strong> <span id="modalMaterial"></span></p>
+            <p><strong>Color:</strong> <span id="modalColor"></span></p>
+            <p><strong>Size:</strong> <span id="modalSize"></span></p>
+            <p><strong>Stock:</strong> <span id="modalStock"></span></p>
+            <p><strong>Price:</strong> Rs. <span id="modalPrice"></span></p>
+        </div>
+    </div>
+
+    <!-- Update Stock Modal -->
+    <div id="updateStockModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-sm relative">
+            <button onclick="closeUpdateModal()" class="absolute top-2 right-3 text-gray-600 hover:text-red-600 text-xl">&times;</button>
+            <h2 class="text-lg font-bold mb-4">Update Stock</h2>
+            <form id="updateStockForm">
+                <input type="hidden" id="updateBlanketId">
+                <div class="mb-4">
+                    <label class="block text-gray-700">New Stock Count</label>
+                    <input type="number" id="newStockValue" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                <button type="submit" class="bg-primary-800 hover:bg-primary-700 text-white px-4 py-2 rounded">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let blankets = [];
+        let filteredBlankets = [];
+        let currentFilter = 'all';
+        let currentSort = 'default';
+
+        // DOM elements
+        const filterType = document.getElementById('filterType');
+        const sortBy = document.getElementById('sortBy');
+
+        // Event listeners
+        filterType.addEventListener('change', () => {
+            currentFilter = filterType.value;
+            applyFiltersAndSort();
+            renderTablePage(1);
+            renderPagination();
+        });
+
+        sortBy.addEventListener('change', () => {
+            currentSort = sortBy.value;
+            applyFiltersAndSort();
+            renderTablePage(1);
+            renderPagination();
+        });
+
+        // Load all blankets from API
+        async function loadAllBlankets() {
+            try {
+                const response = await fetch("http://127.0.0.1:5003/api/blankets/all");
+                const data = await response.json();
+                blankets = data.data;
+                filteredBlankets = [...blankets];
+                
+                applyFiltersAndSort();
+                renderTablePage(1);
+                renderPagination();
+            } catch (error) {
+                console.error("Error loading blankets:", error);
+                document.getElementById("allBlankets").innerHTML = 
+                    "<tr><td colspan='8' class='text-center p-4'>Failed to load blankets</td></tr>";
+            }
+        }
+
+        // Apply filters and sorting
+        function applyFiltersAndSort() {
+            // Apply filter
+            if (currentFilter === 'all') {
+                filteredBlankets = [...blankets];
+            } else {
+                filteredBlankets = blankets.filter(blanket => 
+                    blanket.material.toLowerCase().includes(currentFilter.toLowerCase())
+                );
+            }
+
+            // Apply sorting
+            switch(currentSort) {
+                case 'stock_asc':
+                    filteredBlankets.sort((a, b) => a.stock - b.stock);
+                    break;
+                case 'stock_desc':
+                    filteredBlankets.sort((a, b) => b.stock - a.stock);
+                    break;
+                case 'price_asc':
+                    filteredBlankets.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price_desc':
+                    filteredBlankets.sort((a, b) => b.price - a.price);
+                    break;
+                case 'date_desc':
+                    filteredBlankets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                case 'date_asc':
+                    filteredBlankets.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    break;
+                default:
+                    // Default sorting (by ID or whatever makes sense)
+                    filteredBlankets.sort((a, b) => a.id - b.id);
+            }
+        }
+
+        // Render table page
+        function renderTablePage(page) {
+            currentPage = page;
+            const tableBody = document.getElementById("allBlankets");
+            tableBody.innerHTML = "";
+
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = filteredBlankets.slice(start, end);
+
+            if (pageItems.length === 0) {
+                tableBody.innerHTML = 
+                    "<tr><td colspan='8' class='text-center p-4'>No blankets found</td></tr>";
+                return;
+            }
+
+            pageItems.forEach(blanket => {
+                const maxStock = 50;
+                const stockPercent = Math.min((blanket.stock / maxStock) * 100, 100);
+                let barColorClass = 'bg-green-500';
+
+                if (stockPercent < 30) {
+                    barColorClass = 'bg-red-500';
+                } else if (stockPercent < 60) {
+                    barColorClass = 'bg-yellow-400';
+                }
+
+                let colorCircles = '';
+                const colors = blanket.color ? blanket.color.split(',').map(c => c.trim()) : [];
+
+                if (colors.length > 0) {
+                    colors.forEach(color => {
+                        colorCircles += `
+                            <div class="h-6 w-6 rounded-full border-2 border-white" style="background-color: ${color};"></div>
+                        `;
+                    });
+                } else {
+                    colorCircles = `<div class="h-6 w-6 rounded-full bg-gray-300 border-2 border-white"></div>`;
+                }
+
+                const row = document.createElement("tr");
+                row.className = "hover:bg-gray-50";
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${blanket.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded" src="${blanket.image}" alt="${blanket.name}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${blanket.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${blanket.material}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${blanket.size}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex -space-x-2">${colorCircles}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <span class="mr-2">${blanket.stock}</span>
+                            <div class="relative w-full">
+                                <div class="overflow-hidden h-2 text-xs flex rounded bg-green-200">
+                                    <div style="width: ${stockPercent}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${barColorClass}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rs. ${blanket.price}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-3">
+                            <a href="javascript:void(0);" onclick="showBlanketDetails(this)" 
+                               class="text-primary-600 hover:text-primary-900" 
+                               title="View"
+                               data-id="${blanket.id}"
+                               data-name="${blanket.name}"
+                               data-color="${blanket.color}"
+                               data-size="${blanket.size}"
+                               data-stock="${blanket.stock}"
+                               data-price="${blanket.price}"
+                               data-image="${blanket.image}"
+                               data-material="${blanket.material}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="edit-blanket.html?id=${blanket.id}" class="text-blue-600 hover:text-blue-900" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="text-red-600 hover:text-red-900 delete-btn" data-id="${blanket.id}" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            <a href="javascript:void(0);" class="text-yellow-600 hover:text-yellow-900" title="Update Stock"
+                               onclick="openUpdateStockModal(${blanket.id}, ${blanket.stock})">
+                               <i class="fas fa-boxes"></i>
+                            </a>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Add delete button event listeners
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = this.getAttribute('data-id');
+                    deleteBlanket(id);
+                });
+            });
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            const totalPages = Math.ceil(filteredBlankets.length / itemsPerPage);
+            
+            if (totalPages <= 1) return;
+            
+            const paginationContainer = document.createElement('div');
+            paginationContainer.className = 'flex items-center space-x-1';
+            
+            // Previous button
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.className = 'px-3 py-1 rounded bg-gray-100 hover:bg-gray-200';
+                prevBtn.addEventListener('click', () => {
+                    renderTablePage(currentPage - 1);
+                    renderPagination();
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = `px-3 py-1 rounded ${currentPage === i ? 'bg-primary-500 text-white' : 'bg-gray-100 hover:bg-gray-200'}`;
+                pageBtn.addEventListener('click', () => {
+                    renderTablePage(i);
+                    renderPagination();
+                });
+                paginationContainer.appendChild(pageBtn);
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.className = 'px-3 py-1 rounded bg-gray-100 hover:bg-gray-200';
+                nextBtn.addEventListener('click', () => {
+                    renderTablePage(currentPage + 1);
+                    renderPagination();
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+            
+            pagination.appendChild(paginationContainer);
+        }
+
+        // Delete blanket function
+        function deleteBlanket(id) {
+            if (confirm('Are you sure you want to delete this blanket?')) {
+                fetch(`http://localhost:5003/api/blankets/delete/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        loadAllBlankets(); // Refresh the table
+                    } else {
+                        alert('Delete failed: ' + data.error);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('An error occurred while deleting.');
+                });
+            }
+        }
+
+        // Modal functions
+        function showBlanketDetails(el) {
+            document.getElementById("modalImage").src = el.dataset.image;
+            document.getElementById("modalName").textContent = el.dataset.name;
+            document.getElementById("modalMaterial").textContent = el.dataset.material || "N/A";
+            document.getElementById("modalColor").textContent = el.dataset.color;
+            document.getElementById("modalSize").textContent = el.dataset.size;
+            document.getElementById("modalStock").textContent = el.dataset.stock;
+            document.getElementById("modalPrice").textContent = el.dataset.price;
+            document.getElementById("blanketModal").classList.remove("hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("blanketModal").classList.add("hidden");
+        }
+
+        function openUpdateStockModal(blanketId, currentStock) {
+            document.getElementById('updateBlanketId').value = blanketId;
+            document.getElementById('newStockValue').value = currentStock;
+            document.getElementById('updateStockModal').classList.remove('hidden');
+        }
+
+        function closeUpdateModal() {
+            document.getElementById('updateStockModal').classList.add('hidden');
+        }
+
+        // Update stock form submission
+        document.getElementById('updateStockForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const blanketId = document.getElementById('updateBlanketId').value;
+            const newStock = document.getElementById('newStockValue').value;
+            
+            fetch(`http://localhost:5003/api/update-stock/${blanketId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ stock: newStock })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update stock');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                closeUpdateModal();
+                loadAllBlankets(); // Refresh the table
+            })
+            .catch(error => {
+                alert('Failed to update stock.');
+            });
+        });
+
+        // Initialize on page load
+        window.onload = loadAllBlankets;
+    </script>
+</body>
+</html>

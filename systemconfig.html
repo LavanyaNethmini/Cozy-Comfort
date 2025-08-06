@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Configuration | Admin Dashboard</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="sidebar.js" defer></script>
+</head>
+<body class="bg-gray-100">
+          
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-auto">
+            <header class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">System Configuration</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="p-2 rounded-full bg-white shadow hover:bg-gray-100">
+                            <i class="fas fa-bell text-gray-600"></i>
+                            <span class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-800 font-bold">A</div>
+                        <span class="font-medium">Welcome, Admin</span>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Configuration Tabs -->
+            <div class="bg-white rounded-lg shadow mb-6">
+                <div class="border-b border-gray-200">
+                    <nav class="flex -mb-px">
+                        <button class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
+                            <i class="fas fa-globe mr-2"></i>General
+                        </button>
+                        <button class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            <i class="fas fa-envelope mr-2"></i>Email
+                        </button>
+                        <button class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            <i class="fas fa-lock mr-2"></i>Security
+                        </button>
+                        <button class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            <i class="fas fa-plug mr-2"></i>Integrations
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- General Settings Card -->
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-globe text-indigo-600 mr-2"></i> General Settings
+                </h3>
+                
+                <div class="space-y-6">
+                    <!-- System Name -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">System Name</label>
+                            <p class="text-xs text-gray-500">Displayed in page titles and emails</p>
+                        </div>
+                        <div class="col-span-2">
+                            <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" value="Cozy Textiles ERP">
+                        </div>
+                    </div>
+                    
+                    <!-- Timezone -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Timezone</label>
+                            <p class="text-xs text-gray-500">Affects all date/time displays</p>
+                        </div>
+                        <div class="col-span-2">
+                            <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option>(UTC+05:30) Colombo</option>
+                                <option>(UTC+00:00) London</option>
+                                <option>(UTC-05:00) New York</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Date Format -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Date Format</label>
+                            <p class="text-xs text-gray-500">How dates are displayed system-wide</p>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" name="date_format" checked>
+                                    <span class="ml-2 text-sm text-gray-700">DD/MM/YYYY (15/05/2023)</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" name="date_format">
+                                    <span class="ml-2 text-sm text-gray-700">MM/DD/YYYY (05/15/2023)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Logo -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">System Logo</label>
+                            <p class="text-xs text-gray-500">Displayed in header and emails (300x80px)</p>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-16 overflow-hidden border rounded-md bg-gray-50">
+                                    <img class="h-full" src="https://via.placeholder.com/300x80" alt="Current logo">
+                                </div>
+                                <div class="ml-4">
+                                    <button type="button" class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Change
+                                    </button>
+                                    <button type="button" class="ml-2 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pt-5 border-t border-gray-200 mt-6">
+                    <div class="flex justify-end">
+                        <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Cancel
+                        </button>
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance Mode Card -->
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-tools text-yellow-600 mr-2"></i> Maintenance Mode
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">System Status</label>
+                        <p class="text-xs text-gray-500">Take the system offline for maintenance</p>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="flex items-center">
+                            <span class="mr-4 text-sm font-medium text-gray-700">Live</span>
+                            <button type="button" class="bg-gray-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="false">
+                                <span class="sr-only">Use setting</span>
+                                <span class="translate-x-0 pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"></span>
+                            </button>
+                            <span class="ml-4 text-sm font-medium text-gray-700">Maintenance</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Maintenance Message</label>
+                        <p class="text-xs text-gray-500">Displayed to users when system is down</p>
+                    </div>
+                    <div class="col-span-2">
+                        <textarea rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" disabled>We're currently performing scheduled maintenance. The system will be back online shortly. Thank you for your patience.</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Backup Card -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-database text-blue-600 mr-2"></i> System Backup
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Last Backup</label>
+                        <p class="text-xs text-gray-500">Date and time of most recent backup</p>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-700 mr-4">2023-05-15 02:30 AM</span>
+                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-save mr-2"></i> Backup Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Auto Backup</label>
+                        <p class="text-xs text-gray-500">Schedule automatic database backups</p>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="flex items-center space-x-4">
+                            <select class="mt-1 block w-1/3 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option>Daily</option>
+                                <option>Weekly</option>
+                                <option selected>Monthly</option>
+                            </select>
+                            <div class="flex items-center">
+                                <input type="time" class="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" value="02:00">
+                                <span class="ml-2 text-sm text-gray-500">UTC</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

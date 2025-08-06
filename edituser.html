@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-gray-100">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-2xl font-semibold mb-4">Edit User</h2>
+        <form id="editForm">
+            <input type="hidden" id="userId">
+            <label class="block mb-2">Username:
+                <input type="text" id="username" class="w-full p-2 border rounded mb-4">
+            </label>
+            <label class="block mb-2">Email:
+                <input type="email" id="email" class="w-full p-2 border rounded mb-4">
+            </label>
+            <label class="block mb-2">Role:
+                <select id="role" class="w-full p-2 border rounded mb-4">
+                    <option value="Admin">Admin</option>
+                    <option value="Distributor">Distributor</option>
+                    <option value="Seller">Seller</option>
+                </select>
+            </label>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Update</button>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const userId = params.get("id");
+        const form = document.getElementById("editForm");
+
+        // Load existing user data
+        async function loadUser() {
+            const res = await fetch(`http://127.0.0.1:5001/users/${userId}`);
+            const user = await res.json();
+            document.getElementById("userId").value = user.id;
+            document.getElementById("username").value = user.username;
+            document.getElementById("email").value = user.email;
+            document.getElementById("role").value = user.role;
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const updatedUser = {
+                username: document.getElementById("username").value,
+                email: document.getElementById("email").value,
+                role: document.getElementById("role").value,
+            };
+
+            await fetch(`http://127.0.0.1:5001/users/${userId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedUser),
+            });
+
+            alert("User updated successfully!");
+            window.location.href = "adminDashboard.html";
+        });
+
+        window.onload = loadUser;
+    </script>
+</body>
+</html>

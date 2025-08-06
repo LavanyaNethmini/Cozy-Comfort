@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Stock | Seller Dashboard</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="sellersildebar.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .blanket-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .stock-low { color: #dc2626; }
+        .stock-medium { color: #d97706; }
+        .stock-high { color: #059669; }
+        .main-content {
+            margin-left: 16rem;
+            width: calc(100% - 16rem);
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .sidebar-hidden {
+                display: none;
+            }
+        }
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <button id="mobile-menu-button" class="md:hidden p-2 text-gray-500 rounded-md hover:bg-gray-100">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800 ml-2 md:ml-0">Check Stock Availability</h1>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                    <i class="fas fa-bell text-gray-600"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-800 font-bold">S</div>
+                    <span class="font-medium hidden sm:inline">Seller Account</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-6 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto">
+            <!-- Filters Section -->
+            <div class="bg-white shadow rounded-lg p-6 mb-8">
+                <h2 class="text-lg font-medium text-gray-900 mb-4">Filter Inventory</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Make</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">All Makes</option>
+                            <option>Premium Wool</option>
+                            <option>Cashmere</option>
+                            <option>Cotton</option>
+                            <option>Synthetic</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">All Colors</option>
+                            <option>Red</option>
+                            <option>Blue</option>
+                            <option>Green</option>
+                            <option>Black</option>
+                            <option>White</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Size</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">All Sizes</option>
+                            <option>Single</option>
+                            <option>Double</option>
+                            <option>Queen</option>
+                            <option>King</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Stock Level</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">All Levels</option>
+                            <option>Low (≤ 10)</option>
+                            <option>Medium (11-20)</option>
+                            <option>High (> 20)</option>
+                            <option>Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end space-x-3">
+                    <button class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        Reset Filters
+                    </button>
+                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stock Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white shadow rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Products</p>
+                            <p class="text-2xl font-semibold">124</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i class="fas fa-boxes text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white shadow rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Low Stock</p>
+                            <p class="text-2xl font-semibold text-red-600">18</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-red-100 text-red-600">
+                            <i class="fas fa-exclamation-triangle text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white shadow rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Out of Stock</p>
+                            <p class="text-2xl font-semibold text-gray-600">7</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-gray-100 text-gray-600">
+                            <i class="fas fa-ban text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white shadow rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">New Arrivals</p>
+                            <p class="text-2xl font-semibold text-green-600">24</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i class="fas fa-truck-loading text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-medium text-gray-900">Current Inventory</h2>
+                    <div class="flex space-x-3">
+                        <div class="relative">
+                            <input type="text" placeholder="Search inventory..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button class="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                            <i class="fas fa-download mr-1"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Inventory Status Note -->
+                <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                        <p class="text-sm text-blue-700">
+                            Inventory levels shown reflect available stock at your assigned distributor. 
+                            <span class="font-medium">Red items</span> may require manufacturer production.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Inventory Table -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Make</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="inventory-table-body">
+                            <!-- Inventory items will be loaded here dynamically -->
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center">
+                                    <i class="fas fa-spinner fa-spin text-gray-400 text-xl"></i>
+                                    <p class="mt-2 text-gray-500">Loading inventory data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-6 flex items-center justify-between">
+                    <div class="text-sm text-gray-500">
+                        Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">124</span> results
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 border rounded-lg text-gray-700 hover:bg-gray-100 disabled:opacity-50" disabled>
+                            Previous
+                        </button>
+                        <button class="px-3 py-1 border rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
+                            1
+                        </button>
+                        <button class="px-3 py-1 border rounded-lg text-gray-700 hover:bg-gray-100">
+                            2
+                        </button>
+                        <button class="px-3 py-1 border rounded-lg text-gray-700 hover:bg-gray-100">
+                            3
+                        </button>
+                        <button class="px-3 py-1 border rounded-lg text-gray-700 hover:bg-gray-100">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Reorder Modal -->
+    <div id="reorder-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium">Request Reorder</h3>
+                <button id="close-reorder-modal-btn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4 overflow-hidden">
+                            <i class="fas fa-blanket text-gray-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 id="reorder-product-name" class="font-medium text-gray-900">Premium Wool Blanket</h4>
+                            <p id="reorder-product-details" class="text-sm text-gray-500">Color: Blue | Size: Queen</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs font-medium stock-low">Current Stock: 5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Request Quantity</label>
+                        <div class="flex border rounded-lg">
+                            <button class="px-3 py-2 text-gray-600 hover:bg-gray-100 minus-btn">-</button>
+                            <input type="number" value="10" min="1" class="w-full text-center border-0 focus:ring-0">
+                            <button class="px-3 py-2 text-gray-600 hover:bg-gray-100 plus-btn">+</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option>Standard (3-5 business days)</option>
+                            <option>Express (1-2 business days)</option>
+                            <option>Urgent (Additional fees may apply)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <textarea rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Any special instructions for this reorder..."></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        Cancel
+                    </button>
+                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                        Submit Reorder Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - replace with actual API calls
+        const inventoryData = [
+            {
+                id: 1,
+                name: "Premium Wool Blanket",
+                make: "Wool",
+                color: "Blue",
+                size: "Queen",
+                stock: 5,
+                price: 4500,
+                image: null
+            },
+            {
+                id: 2,
+                name: "Cashmere Throw",
+                make: "Cashmere",
+                color: "Beige",
+                size: "Single",
+                stock: 15,
+                price: 6500,
+                image: null
+            },
+            {
+                id: 3,
+                name: "Cotton Summer Blanket",
+                make: "Cotton",
+                color: "White",
+                size: "King",
+                stock: 25,
+                price: 3200,
+                image: null
+            },
+            {
+                id: 4,
+                name: "Fleece Blanket",
+                make: "Synthetic",
+                color: "Gray",
+                size: "Double",
+                stock: 0,
+                price: 2800,
+                image: null
+            },
+            {
+                id: 5,
+                name: "Alpaca Wool Blanket",
+                make: "Wool",
+                color: "Brown",
+                size: "Queen",
+                stock: 8,
+                price: 5200,
+                image: null
+            },
+            {
+                id: 6,
+                name: "Silk Blend Blanket",
+                make: "Silk",
+                color: "Red",
+                size: "Single",
+                stock: 12,
+                price: 4800,
+                image: null
+            },
+            {
+                id: 7,
+                name: "Thermal Blanket",
+                make: "Synthetic",
+                color: "Black",
+                size: "Double",
+                stock: 30,
+                price: 3800,
+                image: null
+            },
+            {
+                id: 8,
+                name: "Bamboo Blanket",
+                make: "Bamboo",
+                color: "Green",
+                size: "King",
+                stock: 3,
+                price: 4200,
+                image: null
+            },
+            {
+                id: 9,
+                name: "Chenille Throw",
+                make: "Cotton",
+                color: "Pink",
+                size: "Single",
+                stock: 18,
+                price: 3600,
+                image: null
+            },
+            {
+                id: 10,
+                name: "Weighted Blanket",
+                make: "Cotton",
+                color: "Navy",
+                size: "Queen",
+                stock: 7,
+                price: 5500,
+                image: null
+            }
+        ];
+
+        // Function to render inventory table
+        function renderInventoryTable(data) {
+            const tableBody = document.getElementById('inventory-table-body');
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const stockClass = getStockClass(item.stock);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center mr-4 overflow-hidden">
+                                ${item.image ? 
+                                    `<img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover">` : 
+                                    `<i class="fas fa-blanket text-gray-400"></i>`}
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${item.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${item.make}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${item.color}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${item.size}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${stockClass}">
+                            ${item.stock > 0 ? item.stock : 'Out of Stock'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">Rs.${item.price.toFixed(2)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-indigo-600 hover:text-indigo-900 mr-3 view-btn" data-id="${item.id}">
+                            <i class="fas fa-eye mr-1"></i> View
+                        </button>
+                        <button class="text-green-600 hover:text-green-900 reorder-btn" data-id="${item.id}" ${item.stock > 0 ? '' : 'disabled'}>
+                            <i class="fas fa-sync-alt mr-1"></i> Reorder
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to reorder buttons
+            document.querySelectorAll('.reorder-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const itemId = e.target.closest('button').getAttribute('data-id');
+                    const item = data.find(i => i.id == itemId);
+                    if (item) {
+                        openReorderModal(item);
+                    }
+                });
+            });
+        }
+
+        // Function to get stock level class
+        function getStockClass(stock) {
+            if (stock === 0) return 'bg-gray-100 text-gray-800';
+            if (stock < 10) return 'bg-red-100 text-red-800';
+            if (stock < 20) return 'bg-yellow-100 text-yellow-800';
+            return 'bg-green-100 text-green-800';
+        }
+
+        // Function to open reorder modal
+        function openReorderModal(item) {
+            const modal = document.getElementById('reorder-modal');
+            const productName = document.getElementById('reorder-product-name');
+            const productDetails = document.getElementById('reorder-product-details');
+            
+            if (modal && productName && productDetails) {
+                productName.textContent = item.name;
+                productDetails.textContent = `Color: ${item.color} | Size: ${item.size}`;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        // Function to close reorder modal
+        function closeReorderModal() {
+            document.getElementById('reorder-modal').classList.add('hidden');
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load inventory data
+            renderInventoryTable(inventoryData);
+            
+            // Close modal button
+            document.getElementById('close-reorder-modal-btn').addEventListener('click', closeReorderModal);
+            
+            // Close modal when clicking outside
+            document.getElementById('reorder-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('reorder-modal')) {
+                    closeReorderModal();
+                }
+            });
+            
+            // Quantity buttons in modal
+            document.querySelectorAll('#reorder-modal .plus-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = btn.previousElementSibling;
+                    input.value = parseInt(input.value) + 1;
+                });
+            });
+            
+            document.querySelectorAll('#reorder-modal .minus-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = btn.nextElementSibling;
+                    const value = parseInt(input.value);
+                    if (value > 1) {
+                        input.value = value - 1;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

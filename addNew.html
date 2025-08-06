@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Blanket | BlanketCo</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .logo-tight {
+            display: block; /* Removes inline-block spacing */
+            line-height: 0; /* Fixes vertical gap */
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+   <header class="gradient-bg text-white shadow-lg">
+    <div class="container mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <!-- Enhanced Logo Section -->
+            <div class="flex items-center space-x-4">
+                <!-- Larger logo container with subtle shine effect -->
+
+               
+
+                <div class="p-2 bg-white/10 rounded-xl border border-white/20 shadow-sm">
+                    <img src="logo1.png" alt="Cozy Logo" 
+                         class="h-16 w-auto object-contain hover:scale-105 transition-transform rounded-lg">
+                </div>
+                
+                <!-- Text with better hierarchy -->
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight flex items-baseline">
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-white">
+                            Cozy Comfort
+                        </span>
+                    </h1>
+                    <p class="text-sm font-medium text-white/90 mt-0.5 flex items-center">
+                        <span class="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                        Manufacturing Dashboard
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation Button -->
+            <nav>
+                <a href="manufacturer.html" class="flex items-center bg-white/10 hover:bg-white/20 px-4 py-2.5 rounded-lg transition-all group">
+                    <i class="fas fa-arrow-left mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
+                    <span class="font-medium">Back to Inventory</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-plus-circle text-primary-600 mr-3"></i>
+                        Add New Blanket
+                    </h2>
+                    <p class="text-gray-600 mt-1">Fill in the details below to add a new blanket product</p>
+                </div>
+
+                <!-- Form -->
+                <form id="addBlanketForm" class="p-6 space-y-6">
+                    <!-- Basic Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Name -->
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-tag text-primary-500 mr-1"></i> Blanket Name *
+                            </label>
+                            <input type="text" id="name" name="name" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                                placeholder="Premium Wool Blanket">
+                        </div>
+
+                        <!-- Material -->
+                        <div>
+                            <label for="material" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-cut text-primary-500 mr-1"></i> Material *
+                            </label>
+                            <select id="material" name="material" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-white">
+                                <option value="">Select Material</option>
+                                <option value="Wool">Wool</option>
+                                <option value="Fleece">Fleece</option>
+                                <option value="Cotton">Cotton</option>
+                                <option value="Cashmere">Cashmere</option>
+                                <option value="Bamboo">Bamboo</option>
+                            </select>
+                        </div>
+
+                        <!-- Size -->
+                        <div>
+                            <label for="size" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-ruler-combined text-primary-500 mr-1"></i> Size *
+                            </label>
+                            <select id="size" name="size" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-white">
+                                <option value="">Select Size</option>
+                                <option value="Small (50x60 in)">Small (50x60 in)</option>
+                                <option value="Medium (60x80 in)">Medium (60x80 in)</option>
+                                <option value="Large (80x90 in)">Large (80x90 in)</option>
+                                <option value="King (108x90 in)">King (108x90 in)</option>
+                            </select>
+                        </div>
+
+                        <!-- Color -->
+                        <div>
+                            <label for="color" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-palette text-primary-500 mr-1"></i> Color Variants *
+                            </label>
+                            <input type="text" id="color" name="color" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                placeholder="Red, Blue, Green">
+                            <p class="text-xs text-gray-500 mt-1">Separate colors with commas</p>
+                        </div>
+
+                        <!-- Price -->
+                        <div>
+                            <label for="price" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-rupee-sign text-primary-500 mr-1"></i> Price (Rs.) *
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">Rs.</span>
+                                </div>
+                                <input type="number" id="price" name="price" min="0" step="0.01" required
+                                    class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                    placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <!-- Stock -->
+                        <div>
+                            <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-boxes text-primary-500 mr-1"></i> Initial Stock *
+                            </label>
+                            <input type="number" id="stock" name="stock" min="0" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-image text-primary-500 mr-1"></i> Product Image
+                        </label>
+                        <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-primary-300 transition-all bg-gray-50">
+                            <div class="flex flex-col items-center justify-center space-y-2">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400"></i>
+                                <p class="text-sm text-gray-600">
+                                    <span class="font-medium text-primary-600">Click to upload</span> or drag and drop
+                                </p>
+                                <p class="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                            </div>
+                            <input id="image" name="image" type="file" accept="image/*" class="hidden">
+                        </div>
+                        
+                        <div id="imagePreview" class="mt-4 hidden">
+                            <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                            <div class="relative inline-block">
+                                <img id="previewImage" class="h-48 rounded-lg object-cover border border-gray-200 shadow-sm">
+                                <button id="removeImage" type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm hover:bg-red-600">
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6">
+                        <button type="reset" class="px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center space-x-2 border border-gray-300 text-gray-700 hover:bg-gray-50">
+                            <i class="fas fa-undo"></i>
+                            <span>Reset Form</span>
+                        </button>
+                        <button type="submit" class="gradient-bg hover:shadow-lg text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center space-x-2 animate-pulse-slow">
+                            <i class="fas fa-save"></i>
+                            <span>Save Blanket</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image Upload Handling
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('image');
+            const previewContainer = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+            const removeImageBtn = document.getElementById('removeImage');
+            
+            // Handle drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropZone.classList.add('border-primary-500', 'bg-primary-50');
+            }
+            
+            function unhighlight() {
+                dropZone.classList.remove('border-primary-500', 'bg-primary-50');
+            }
+            
+            dropZone.addEventListener('drop', handleDrop, false);
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+            
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+            
+            function handleFiles(files) {
+                if (files.length) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            previewContainer.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            }
+            
+            removeImageBtn.addEventListener('click', function() {
+                previewImage.src = '';
+                previewContainer.classList.add('hidden');
+                fileInput.value = '';
+            });
+            
+            // Form Submission
+            document.getElementById('addBlanketForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate required fields
+                const requiredFields = ['name', 'material', 'size', 'color', 'price', 'stock'];
+                let isValid = true;
+                
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value.trim()) {
+                        field.classList.add('border-red-500');
+                        isValid = false;
+                    } else {
+                        field.classList.remove('border-red-500');
+                    }
+                });
+                
+                if (!isValid) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Prepare form data
+                const formData = {
+                    name: document.getElementById('name').value,
+                    material: document.getElementById('material').value,
+                    size: document.getElementById('size').value,
+                    color: document.getElementById('color').value.split(',').map(c => c.trim()),
+                    price: parseFloat(document.getElementById('price').value),
+                    stock: parseInt(document.getElementById('stock').value),
+                    image: previewImage.src || ''
+                };
+                
+                console.log('Form data:', formData);
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    alert('Blanket added successfully!');
+                    this.reset();
+                    previewContainer.classList.add('hidden');
+                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Blanket';
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+        });
+
+        document.getElementById('addBlanketForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('http://localhost:5003/api/blankets/add', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        const msgDiv = document.getElementById('responseMsg');
+        if (result.success) {
+          msgDiv.innerHTML = `<span class="text-green-600">✅ ${result.message}</span>`;
+          form.reset();
+        } else {
+          msgDiv.innerHTML = `<span class="text-red-600">❌ ${result.error}</span>`;
+        }
+      } catch (error) {
+        document.getElementById('responseMsg').innerHTML =
+          `<span class="text-red-600">❌ Error: ${error.message}</span>`;
+      }
+    });
+
+    </script>
+</body>
+</html>
+
