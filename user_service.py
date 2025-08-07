@@ -4,12 +4,17 @@
 # In[1]:
 
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
 import mysql.connector
 
+user_bp = Blueprint("user", __name__)
+CORS(user_bp)
+
 app = Flask(__name__)
 CORS(app)
+app.register_blueprint(user_bp)
+
 
 # Reuse connection logic
 def get_connection():
@@ -21,7 +26,7 @@ def get_connection():
         database="cozy_comfort_db"
     )
 
-@app.route('/users', methods=['GET'])
+@user_bp.route('/users', methods=['GET'])
 def get_all_users():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -39,7 +44,7 @@ def get_all_users():
 # In[2]:
 
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
+@user_bp.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     conn = get_connection()
     cursor = conn.cursor()
@@ -58,7 +63,7 @@ def delete_user(user_id):
 # In[3]:
 
 
-@app.route('/users/<int:user_id>', methods=['GET'])
+@auser_bp.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -75,7 +80,7 @@ def get_user(user_id):
 # In[4]:
 
 
-@app.route('/users/<int:user_id>', methods=['PUT'])
+@user_bp.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     data = request.get_json()
     username = data.get('username')
@@ -100,7 +105,7 @@ def update_user(user_id):
 # In[5]:
 
 
-@app.route('/users', methods=['POST'])
+@user_bp.route('/users', methods=['POST'])
 def create_user():
     from flask import request  # just in case it's not at top
 

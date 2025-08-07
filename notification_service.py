@@ -4,13 +4,16 @@
 # In[1]:
 
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
+
+notification_bp = Blueprint("notification", __name__)
+CORS(notification_bp)
 
 app = Flask(__name__)
 CORS(app)
+app.register_blueprint(notification_bp)
 
 
 # Database connection
@@ -35,7 +38,7 @@ except Exception as e:
 # In[2]:
 
 
-@app.route('/notifications', methods=['POST'])
+@notification_bp.route('/notifications', methods=['POST'])
 def create_notification():
     data = request.get_json()
     title = data.get('title')
@@ -67,7 +70,7 @@ def create_notification():
 # In[3]:
 
 
-@app.route('/notifications', methods=['GET'])
+@notification_bp.route('/notifications', methods=['GET'])
 def get_all_notifications():
     try:
         conn = get_connection()
@@ -88,7 +91,7 @@ def get_all_notifications():
 # In[4]:
 
 
-@app.route('/notifications/<int:distributor_id>', methods=['GET'])
+@notification_bp.route('/notifications/<int:distributor_id>', methods=['GET'])
 def get_notifications(distributor_id):
     try:
         conn = get_connection()
@@ -110,7 +113,7 @@ def get_notifications(distributor_id):
 # In[5]:
 
 
-@app.route('/notifications/<int:notification_id>/read', methods=['PUT'])
+@notification_bp.route('/notifications/<int:notification_id>/read', methods=['PUT'])
 def mark_notification_as_read(notification_id):
     try:
         conn = get_connection()

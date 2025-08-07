@@ -4,21 +4,24 @@
 # In[1]:
 
 
-get_ipython().system('pip install flask')
 
 
 # In[2]:
 
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS  # Add this import
 import mysql.connector
 import jwt
 import datetime
 
 
+auth_bp = Blueprint("auth", __name__)
+CORS(auth_bp)
+
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
+app.register_blueprint(auth_bp)
 
 # Database connection
 def get_connection():
@@ -42,7 +45,7 @@ except Exception as e:
 # In[3]:
 
 
-@app.route('/register', methods=['POST'])
+@auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
     username = data.get('username')
@@ -67,7 +70,7 @@ def register():
 # In[4]:
 
 
-@app.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data.get('email')

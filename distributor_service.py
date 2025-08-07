@@ -4,12 +4,16 @@
 # In[1]:
 
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Blueprint
 from flask_cors import CORS
 import mysql.connector
 
+distributor_bp = Blueprint("distributor", __name__)
+CORS(distributor_bp)
+
 app = Flask(__name__)
 CORS(app)
+app.register_blueprint(distributor_bp)
 
 # Reuse connection logic
 def get_connection():
@@ -28,7 +32,7 @@ def get_connection():
 # In[2]:
 
 
-@app.route('/api/orders', methods=['GET'])
+@distributor_bp.route('/api/orders', methods=['GET'])
 def get_distributor_orders():
     distributor_id = request.args.get('distributor_id')
 

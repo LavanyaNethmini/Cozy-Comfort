@@ -7,15 +7,19 @@
 import nest_asyncio
 nest_asyncio.apply()
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Blueprint
 from flask_cors import CORS
 from datetime import datetime
 import requests
 import mysql.connector
 
+seller_bp = Blueprint("seller", __name__)
+CORS(seller_bp)
 
 app = Flask(__name__)
 CORS(app)
+app.register_blueprint(seller_bp)
+
 
 def get_connection():
     return mysql.connector.connect(
@@ -26,7 +30,7 @@ def get_connection():
         database="cozy_comfort_db"
     )
 
-@app.route('/blankets', methods=['GET'])
+@seller_bp.route('/blankets', methods=['GET'])
 def get_blankets():
     connection = get_connection()
     cursor = connection.cursor(dictionary=True)
@@ -47,7 +51,7 @@ def get_blankets():
 
 import os
 
-@app.route('/api/blankets/top-stock', methods=['GET'])
+@seller_bp.route('/api/blankets/top-stock', methods=['GET'])
 def get_top_stock_blankets():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -91,7 +95,7 @@ def get_top_stock_blankets():
 
 from flask import send_from_directory
 
-@app.route('/images/<path:filename>')
+@seller_bp.route('/images/<path:filename>')
 def serve_image(filename):
     return send_from_directory('C:/wamp64/www/cozy-comfort/images', filename)
 
@@ -100,7 +104,7 @@ def serve_image(filename):
 # In[4]:
 
 
-@app.route('/api/seller/<int:seller_id>', methods=['GET'])
+@seller_bp.route('/api/seller/<int:seller_id>', methods=['GET'])
 def get_seller_profile(seller_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -127,7 +131,7 @@ def get_seller_profile(seller_id):
 # In[5]:
 
 
-@app.route('/api/orders', methods=['POST'])
+@seller_bp.route('/api/orders', methods=['POST'])
 def create_order():
     data = request.json
 
@@ -169,7 +173,7 @@ def create_order():
 # In[6]:
 
 
-@app.route("/api/orders", methods=["POST"])
+@seller_bp.route("/api/orders", methods=["POST"])
 def place_order():
     data = request.get_json()
 
@@ -241,7 +245,7 @@ def place_order():
 # In[7]:
 
 
-@app.route('/api/blankets/all', methods=['GET'])
+@seller_bp.route('/api/blankets/all', methods=['GET'])
 def get_all_blankets():
     try:
         conn = get_connection()  # Make sure this function exists
@@ -277,7 +281,7 @@ def get_all_blankets():
 # In[8]:
 
 
-@app.route('/api/distributors', methods=['GET'])
+@seller_bp.route('/api/distributors', methods=['GET'])
 def get_distributors():
     try:
         conn = get_connection()

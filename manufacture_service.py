@@ -4,14 +4,18 @@
 # In[1]:
 
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
 import mysql.connector
 
+manufacture_bp = Blueprint("manufacture", __name__)
+CORS(manufacture_bp)
+
 app = Flask(__name__)
 CORS(app)
+app.register_blueprint(manufacture_bp)
 
 # Reuse connection logic
 def get_connection():
@@ -28,7 +32,7 @@ def get_connection():
 # In[2]:
 
 
-@app.route('/api/blankets/all', methods=['GET'])
+@manufacture_bp.route('/api/blankets/all', methods=['GET'])
 def get_all_blankets():
     try:
         conn = get_connection()  # Make sure this function exists
@@ -66,7 +70,7 @@ def get_all_blankets():
 
 from flask import send_from_directory
 
-@app.route('/images/<path:filename>')
+@manufacture_bp.route('/images/<path:filename>')
 def serve_image(filename):
     return send_from_directory('C:/wamp64/www/cozy-comfort/images', filename)
 
@@ -74,7 +78,7 @@ def serve_image(filename):
 # In[4]:
 
 
-@app.route('/inventory-summary', methods=['GET'])
+@manufacture_bp.route('/inventory-summary', methods=['GET'])
 def inventory_summary():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -112,7 +116,7 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'images')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
-@app.route('/api/blankets/add', methods=['POST'])
+@manufacture_bp.route('/api/blankets/add', methods=['POST'])
 def add_blanket():
     try:
         name = request.form['name']
@@ -161,7 +165,7 @@ def add_blanket():
 # In[6]:
 
 
-@app.route('/api/blankets/delete/<int:blanket_id>', methods=['DELETE'])
+@manufacture_bp.route('/api/blankets/delete/<int:blanket_id>', methods=['DELETE'])
 def delete_blanket(blanket_id):
     try:
         conn = get_connection()
@@ -195,7 +199,7 @@ def delete_blanket(blanket_id):
 
 
 # Get single blanket
-@app.route('/api/blankets/<int:id>', methods=['GET'])
+@manufacture_bp.route('/api/blankets/<int:id>', methods=['GET'])
 def get_blanket(id):
     try:
         conn = get_connection()
@@ -231,7 +235,7 @@ def get_blanket(id):
             conn.close()
 
 # Update blanket
-@app.route('/api/blankets/<int:id>', methods=['PUT'])
+@manufacture_bp.route('/api/blankets/<int:id>', methods=['PUT'])
 def update_blanket(id):
     try:
         data = request.get_json()
@@ -276,7 +280,7 @@ def update_blanket(id):
 # In[8]:
 
 
-@app.route('/api/update-stock/<int:blanket_id>', methods=['PUT'])
+@manufacture_bp.route('/api/update-stock/<int:blanket_id>', methods=['PUT'])
 def update_stock(blanket_id):
     data = request.get_json()
     new_stock = data.get('stock')
