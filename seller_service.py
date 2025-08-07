@@ -7,18 +7,17 @@
 import nest_asyncio
 nest_asyncio.apply()
 
-from flask import Flask, jsonify, request, Blueprint
+from flask import Blueprint, Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from datetime import datetime
 import requests
 import mysql.connector
+import os
 
 seller_bp = Blueprint("seller", __name__)
 CORS(seller_bp)
 
-app = Flask(__name__)
-CORS(app)
-app.register_blueprint(seller_bp)
+
 
 
 def get_connection():
