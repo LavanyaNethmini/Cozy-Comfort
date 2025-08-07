@@ -4,16 +4,14 @@
 # In[1]:
 
 
-from flask import Flask, request, jsonify, Blueprint
+from flask import Blueprint, Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 
 user_bp = Blueprint("user", __name__)
 CORS(user_bp)
 
-app = Flask(__name__)
-CORS(app)
-app.register_blueprint(user_bp)
+
 
 
 # Reuse connection logic

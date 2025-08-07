@@ -4,7 +4,7 @@
 # In[1]:
 
 
-from flask import Flask, request, jsonify, Blueprint
+from flask import Blueprint, Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
@@ -13,9 +13,6 @@ import mysql.connector
 manufacture_bp = Blueprint("manufacture", __name__)
 CORS(manufacture_bp)
 
-app = Flask(__name__)
-CORS(app)
-app.register_blueprint(manufacture_bp)
 
 # Reuse connection logic
 def get_connection():

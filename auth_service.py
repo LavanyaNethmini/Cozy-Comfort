@@ -9,7 +9,7 @@
 # In[2]:
 
 
-from flask import Flask, request, jsonify, Blueprint
+from flask import Blueprint, Flask, request, jsonify
 from flask_cors import CORS  # Add this import
 import mysql.connector
 import jwt
@@ -19,9 +19,6 @@ import datetime
 auth_bp = Blueprint("auth", __name__)
 CORS(auth_bp)
 
-app = Flask(__name__)
-CORS(app)
-app.register_blueprint(auth_bp)
 
 # Database connection
 def get_connection():
